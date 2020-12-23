@@ -3,6 +3,7 @@
 # Requirements:
 * Numpy
 * Matplotlib
+* mplcursors
 
 # Usage:
 * cd to the directory of the script using cmd

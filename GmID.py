@@ -17,6 +17,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import mplcursors
 import math
 import os
 import re
@@ -194,13 +195,12 @@ def charting(data_file, lengths, x_range, corner = 'TT', VDS = 600, VBS = 0, x =
         ax[i].xaxis.set_label_coords(0.5, 1)
         ax[i].tick_params(axis='both', which='major', labelsize=8)
         plt.minorticks_on()
-        ax[i].grid(which='major', linestyle='-', linewidth=0.5)
-        ax[i].grid(which='minor', linestyle=':', linewidth=0.4)
         
     #Post plotting conditioning
     fig.legend(legends, loc='upper right')
     fig.suptitle('Vds = '+str(VDS)+'mV, Vbs = '+str(VBS)+'mV, @'+corner, fontsize=12)
     plt.figtext(0.005,0.005,'Scripted by Mahmoud A. Sofy', fontsize='xx-small')
+    mplcursors.cursor(multiple=True)
     plt.show(block=True)
 
 ###________________________________###

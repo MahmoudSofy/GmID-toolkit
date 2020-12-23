@@ -3,7 +3,7 @@
 
 ###________________________________###
 
-#V1.0 @ 2020
+#V1.1 @ 2020
 #General notes:
 #lengths are mentioned in um, VDS and VBS are in mV, and rest of units are in SI.
 #All functions and integrations were not set to handle wrong entries, so this toolkit is garbage in garbage out.
@@ -136,7 +136,7 @@ def charting(data_file, lengths, x_range, corner = 'TT', VDS = 600, VBS = 0, x =
     for i in np.arange(0, len(y)):
         parameters = list(set(parameters) | set([i for i in re.split(r'[/,(,),+,-,*]', y[i]) if i]))
     
-    xparameters = re.split(r'[/,(,),+,-,*]', x)
+    xparameters = set([i for i in re.split(r'[/,(,),+,-,*]', x) if i])
     for new in xparameters:
         if new not in parameters:
             parameters.append(new)
@@ -286,39 +286,42 @@ def charting3D(data_file, length, x='gm/id', y = ['gm/gds', 'id/w', 'id/gds', 'v
 
 logo = '''
 
-
- ██████╗ ███╗   ███╗██╗██████╗         ██╗   ██╗ ██╗    ██████╗ 
-██╔════╝ ████╗ ████║██║██╔══██╗        ██║   ██║███║   ██╔═████╗
-██║  ███╗██╔████╔██║██║██║  ██║        ██║   ██║╚██║   ██║██╔██║
-██║   ██║██║╚██╔╝██║██║██║  ██║        ╚██╗ ██╔╝ ██║   ████╔╝██║
-╚██████╔╝██║ ╚═╝ ██║██║██████╔╝███████╗ ╚████╔╝  ██║██╗╚██████╔╝
- ╚═════╝ ╚═╝     ╚═╝╚═╝╚═════╝ ╚══════╝  ╚═══╝   ╚═╝╚═╝ ╚═════╝ 
-                                                                
-████████╗ ██████╗  ██████╗ ██╗     ██╗  ██╗██╗████████╗         
-╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██║ ██╔╝██║╚══██╔══╝         
-   ██║   ██║   ██║██║   ██║██║     █████╔╝ ██║   ██║            
-   ██║   ██║   ██║██║   ██║██║     ██╔═██╗ ██║   ██║            
-   ██║   ╚██████╔╝╚██████╔╝███████╗██║  ██╗██║   ██║            
-   ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝                                                     
+ ██████╗ ███╗   ███╗██╗██████╗        ██╗   ██╗ ██╗   ██╗
+██╔════╝ ████╗ ████║██║██╔══██╗       ██║   ██║███║  ███║
+██║  ███╗██╔████╔██║██║██║  ██║       ██║   ██║╚██║  ╚██║
+██║   ██║██║╚██╔╝██║██║██║  ██║       ╚██╗ ██╔╝ ██║   ██║
+╚██████╔╝██║ ╚═╝ ██║██║██████╔╝███████╗╚████╔╝  ██║██╗██║
+ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═════╝ ╚══════╝ ╚═══╝   ╚═╝╚═╝╚═╝
+                                                         
+████████╗ ██████╗  ██████╗ ██╗     ██╗  ██╗██╗████████╗  
+╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██║ ██╔╝██║╚══██╔══╝  
+   ██║   ██║   ██║██║   ██║██║     █████╔╝ ██║   ██║     
+   ██║   ██║   ██║██║   ██║██║     ██╔═██╗ ██║   ██║     
+   ██║   ╚██████╔╝╚██████╔╝███████╗██║  ██╗██║   ██║     
+   ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝     
+                                                                                                     
 '''
 tools = '''
-______________| Data files |______________
+____________| Data files |____________
 [1]Create data file
 
-______________| Charting |______________
+_____________| Charting |_____________
 [2]Generate fundamental GmID charts
                                     
-______________| Advanced Charting |______________
+_________| Advanced Charting |________
 [3]Advanced charts      [4]3D charts
 
 ______________| EXTRAS |______________
 [5]Help      [6]Contact me
 '''
+sep = '''
+______________________________________
+'''
 cp = os.getcwd()
 info = '''
 Mahmoud A. Sofy
 Fayoum university, ECE class 2022
-__________________________________
+______________________________________
 Email: ma3644@fayoum.edu.eg
 Linkedin: /in/mahmoud-sofy
 '''
@@ -368,7 +371,6 @@ Overview:
 **contact me:
     Your feedback will be welcomed, and you can ask me if you
     need.
-    
 '''
 print(logo)
 
@@ -380,26 +382,51 @@ while True:
         path = input('Save the file as>>> ') + '.npy'
         np.save(path, file)
 
-    if tool == '2':
+    elif tool == '2':
         available_files = os.listdir(cp)
         print('Available files: \n', available_files)
-        data_file = np.load(input('Which data file do you need>>> '), allow_pickle=True)[()]
-        charting(data_file, eval(input('Enter the required [lengths]>>> ')), eval(input('Enter the [limits]>>> ')), corner = input('Enter the corner>>> ') or 'TT', VDS = int(input('Enter the VDS>>> ') or 600), VBS = int(input('Enter the VBS>>> ') or 0), x = 'gm/id', y = ['gm/gds', 'id/w', 'id/gds', 'vgs', 'cdd/cgg', 'vdsat', 'gm/(cdd+cgg)'])
+        filein = input('Which data file do you need>>> ')
+        data_file = np.load(filein, allow_pickle=True)[()]
+        lengthsin = eval(input('Enter the required [lengths]>>> ')) or [0.2, 0.4, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3]
+        limitsin = eval(input('Enter the [limits]>>> ')) or [5, 20]
+        cornerin = input('Enter the corner>>> ') or 'TT'
+        VDSin = int(input('Enter the VDS>>> ') or 600)
+        VBSin = int(input('Enter the VBS>>> ') or 0)
+        xin = 'gm/id'
+        yin = ['gm/gds', 'id/w', 'id/gds', 'vgs', 'cdd/cgg', 'vdsat', 'gm/(cdd+cgg)']
+        charting(data_file, lengthsin, limitsin, corner = cornerin, VDS = VDSin, VBS = VBSin, x = xin, y = yin)
         
-    if tool == '3':
+    elif tool == '3':
         available_files = os.listdir(cp)
-        print('Available data files: \n', available_files)
-        data_file = np.load(input('Which data file do you need>>> '), allow_pickle=True)[()]
-        charting(data_file, eval(input('Enter the required [lengths]>>> ')), eval(input('Enter the [limits]>>> ')), corner = input('Enter the corner>>> ') or 'TT', VDS = int(input('Enter the VDS>>> ') or 600), VBS = int(input('Enter the VBS>>> ') or 0), x = input('Enter the x-axis>>> ') or 'gm/id', y = eval(input('Enter the [y-axes]>>> ')) or ['gm/gds', 'id/w', 'id/gds', 'vgs', 'cdd/cgg', 'vdsat', 'gm/(cdd+cgg)'])
-        
-    if tool == '4':
+        print('Available files: \n', available_files)
+        filein = input('Which data file do you need>>> ')
+        data_file = np.load(filein, allow_pickle=True)[()]
+        lengthsin = eval(input('Enter the required [lengths]>>> '))
+        limitsin = eval(input('Enter the [limits]>>> ')) or [5, 20]
+        cornerin = input('Enter the corner>>> ') or 'TT'
+        VDSin = int(input('Enter the VDS>>> ') or 600)
+        VBSin = int(input('Enter the VBS>>> ') or 0)
+        xin = input('Enter the x-axis>>> ') or 'gm/id'
+        yin = eval(input('Enter the [y-axes]>>> ') or '''['gm/gds', 'id/w', 'id/gds', 'vgs', 'cdd/cgg', 'vdsat', 'gm/(cdd+cgg)']''')
+        charting(data_file, lengthsin, limitsin, corner = cornerin, VDS = VDSin, VBS = VBSin, x = xin, y = yin)
+       
+    elif tool == '4':
         available_files = os.listdir(cp)
-        print('Available data files: \n', available_files)
-        data_file = np.load(input('Which data file do you need>>> '), allow_pickle=True)[()]
-        charting3D(data_file, eval(input('Enter the required length>>> ')), corner = input('Enter the corner>>> ') or 'TT', VBS = int(input('Enter the VBS>>> ') or 0), x = input('Enter the x-axis>>> ') or 'gm/id', y = eval(input('Enter the [y-axes]>>> ')) or ['gm/gds', 'id/w', 'id/gds', 'vgs', 'cdd/cgg', 'vdsat', 'gm/(cdd+cgg)'])
+        print('Available files: \n', available_files)
+        filein = input('Which data file do you need>>> ')
+        data_file = np.load(filein, allow_pickle=True)[()]
+        lengthsin = eval(input('Enter the required length>>> '))
+        cornerin = input('Enter the corner>>> ') or 'TT'
+        VBSin = int(input('Enter the VBS>>> ') or 0)
+        xin = input('Enter the x-axis>>> ') or 'gm/id'
+        yin = eval(input('Enter the [y-axes]>>> ') or '''['gm/gds', 'id/w', 'id/gds', 'vgs', 'cdd/cgg', 'vdsat', 'gm/(cdd+cgg)']''')
+        charting3D(data_file, lengthsin, corner = cornerin, VBS = VBSin, x = xin, y = yin)
     
-    if tool == '5':
+    elif tool == '5':
         print(Help)
         
-    if tool == '6':
+    elif tool == '6':
         print(info)
+    else:
+        print('Enter a valid choice')
+    print(sep)
